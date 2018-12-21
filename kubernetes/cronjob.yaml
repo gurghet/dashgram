@@ -1,0 +1,28 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: dashgram-job
+spec:
+  schedule: "*/1 * * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 2
+  jobTemplate:
+    spec:
+      #ttlSecondsAfterFinished: 500
+      activeDeadlineSeconds: 200
+      template:
+        spec:
+          containers:
+          - name: dashgram-job
+            image: gurghet/dashgram:0.2.1
+            volumeMounts:
+            - mountPath: /dashgram-data
+              name: dashgram-persistent-volume
+            args:
+            - /dashgram-data/data.txt
+          volumes:
+          - name: dashgram-persistent-volume
+            persistentVolumeClaim:
+              claimName: dashgram-job-volumeclaim
+          restartPolicy: Never

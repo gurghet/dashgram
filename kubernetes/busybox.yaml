@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: busybox
+spec:
+  containers:
+  - image: busybox
+    command:
+      - sleep
+      - "3600"
+    imagePullPolicy: IfNotPresent
+    name: busybox
+    volumeMounts:
+    - mountPath: /dashgram-data
+      name: dashgram-persistent-volume
+  volumes:
+  - name: dashgram-persistent-volume
+    persistentVolumeClaim:
+      claimName: dashgram-job-volumeclaim
+  restartPolicy: Always
